@@ -1,6 +1,7 @@
+from PyQt5.QtWidgets import QMainWindow, QApplication
 from .menuBar import MenuBar
 from .files_bar import FilesBar
-from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QTextEdit, QFileDialog
+from .new_file import NewFile
 
 
 class Editor(QMainWindow):
@@ -17,7 +18,7 @@ class Editor(QMainWindow):
 
         self.confSignals()
 
-        self.new_file()
+        # self.new_file()
 
     def init_ui(self):
         self.setMenuBar(self._menu_bar)
@@ -34,8 +35,10 @@ class Editor(QMainWindow):
         self._menu_bar.close_window.connect(self.quit)
 
     def new_file(self):
-        print("New file")
-        self.files_tabs.open_tab()
+        dialog = NewFile(self)
+        dialog.exec_()
+        if dialog.is_create_clicked():
+            self.files_tabs.open_tab(dialog.name.text())
         # self.update_status_bar()
 
     def save_file(self):
