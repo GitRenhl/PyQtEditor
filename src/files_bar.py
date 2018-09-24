@@ -26,4 +26,4 @@ class FilesBar(QTabWidget):
         return self.currentIndex() >= 0
 
     def is_current_path(self):
-        return self.currentWidget().filePath is None
+        return self.currentWidget().file_path is None

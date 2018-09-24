@@ -25,10 +25,81 @@ from PyQt5.Qsci import QsciScintilla, \
     QsciLexerXML, \
     QsciLexerYAML
 from PyQt5.QtGui import QFont
-# from PyQt5.QtWidgets import QTextEdit
+from .settings import Settings as S
 
 
 class TextArea(QsciScintilla):
+
+    extension_to_lang = {
+        'sh': "Bash",
+        'bash': "Bash",
+        'zsh': "Bash",
+        'bat': "Bash",
+        'cmd': "Bash",
+        'c': "CPP",
+        'cc': "CPP",
+        'cpp': "CPP",
+        'cxx': "CPP",
+        'h': "CPP",
+        'hh': "CPP",
+        'hpp': "CPP",
+        'hxx': "CPP",
+        'cs': "CSharp",
+        'java': "Java",
+        'js': "JavaScript",
+        'json': "JavaScript",
+        'css': "CSS",
+        'd': "D",
+        'f': "Fortran",
+        'html': "HTML",
+        'htm': "HTML",
+        'xml': "XML",
+        'lua': "Lua",
+        'Makefile': "Makefile",
+        'pas': "Pascal",
+        'pl': "Perl",
+        'pm': "Perl",
+        'po': "PO",
+        'pot': "PO",
+        'ps': "PostScript",
+        'pov': "POV",
+        'inc': "POV",
+        'properties': "Properties",
+        'ini': "Properties",
+        'py': "Python",
+        'rb': "Ruby",
+        'sql': "SQL",
+        'tcl': "TCL",
+        'tex': "TeX",
+        'yaml': "YAML",
+        'yml': "YAML"
+    }
+    lang_lexer = {
+        'Bash': QsciLexerBash,
+        'CPP': QsciLexerCPP,
+        'CSharp': QsciLexerCSharp,
+        'Java': QsciLexerJava,
+        'JavaScript': QsciLexerJavaScript,
+        'CSS': QsciLexerCSS,
+        'D': QsciLexerD,
+        'Fortran': QsciLexerFortran,
+        'HTML': QsciLexerHTML,
+        'XML': QsciLexerXML,
+        'Lua': QsciLexerLua,
+        'Makefile': QsciLexerMakefile,
+        'Pascal': QsciLexerPascal,
+        'Perl': QsciLexerPerl,
+        'PO': QsciLexerPO,
+        'Postscript': QsciLexerPostScript,
+        'POV': QsciLexerPOV,
+        'Properties': QsciLexerProperties,
+        'Python': QsciLexerPython,
+        'Ruby': QsciLexerRuby,
+        'SQL': QsciLexerSQL,
+        'TCL': QsciLexerTCL,
+        'TeX': QsciLexerTeX,
+        'YAML': QsciLexerYAML
+    }
 
     def __init__(self,
                  name: str = "Untilted",
@@ -36,80 +107,45 @@ class TextArea(QsciScintilla):
                  path: str = None):
         super().__init__()
 
-        self.lang_lexer = {
-            'sh': QsciLexerBash,
-            'bash': QsciLexerBash,
-            'zsh': QsciLexerBash,
-            'bat': QsciLexerBatch,
-            'cmd': QsciLexerBatch,
-            'c': QsciLexerCPP,
-            'cc': QsciLexerCPP,
-            'cpp': QsciLexerCPP,
-            'cxx': QsciLexerCPP,
-            'h': QsciLexerCPP,
-            'hh': QsciLexerCPP,
-            'hpp': QsciLexerCPP,
-            'hxx': QsciLexerCPP,
-            'cs': QsciLexerCSharp,
-            'java': QsciLexerJava,
-            'js': QsciLexerJavaScript,
-            'json': QsciLexerJavaScript,
-            'css': QsciLexerCSS,
-            'd': QsciLexerD,
-            'f': QsciLexerFortran,
-            'html': QsciLexerHTML,
-            'htm': QsciLexerHTML,
-            'xml': QsciLexerXML,
-            'lua': QsciLexerLua,
-            'Makefile': QsciLexerMakefile,
-            'pas': QsciLexerPascal,
-            'pl': QsciLexerPerl,
-            'pm': QsciLexerPerl,
-            'po': QsciLexerPO,
-            'pot': QsciLexerPO,
-            'ps': QsciLexerPostScript,
-            'pov': QsciLexerPOV,
-            'inc': QsciLexerPOV,
-            'properties': QsciLexerProperties,
-            'ini': QsciLexerProperties,
-            'py': QsciLexerPython,
-            'rb': QsciLexerRuby,
-            'sql': QsciLexerSQL,
-            'tcl': QsciLexerTCL,
-            'tex': QsciLexerTeX,
-            'yaml': QsciLexerYAML,
-            'yml': QsciLexerYAML
-        }
-        self.filePath = path
-        self.name = name
+        tmp = name.split(".")
+        self.file_path = path
+        self.full_name = name
+        if len(tmp) > 1:
+            self.extension = tmp[-1]
+        else:
+            self.extension = None
         self.current_lang = None
         self.__font = QFont("Consolas, 'Courier New', monospace", 18)
         self.setup_editor()
 
     def setup_editor(self):
         # FONT #
-        self.setUtf8(True)
-        self.set_lexer("py")
-        self.__update_font()
+        self.setUtf8(S.UTF8)
+        lang = self.extension_to_lang.get(self.extension)
+        self.set_lexer(lang)
 
         # Tab
-        self.setTabWidth(4)
-        self.setIndentationsUseTabs(False)
-        self.setAutoIndent(True)
-
-        self.setScrollWidth(1)
+        self.setIndentationGuides(S.INDENTATION_GUIDES)
+        self.setIndentationsUseTabs(S.INDENTATIONS_USE_TABS)
+        self.setTabWidth(S.TAB_WIDTH)
+        self.setAutoIndent(S.AUTO_INDENT)
+        self.setScrollWidth(S.SCROLL_WIDTH)
 
         # WarpMode
-        self.setWrapMode(QsciScintilla.WrapWhitespace)
+        self.setWrapMode(S.WRAP_MODE)
+
+        # Cursor
+        self.setCaretLineVisible(S.CARET_LINE_VISIBLE)
+        self.setCaretLineBackgroundColor(S.CARET_LINE_BG_COLOR)
 
         # MARGIN #
         self.setMarginType(0, self.NumberMargin)
         self.set_margin_num_width()
+        self.setMarginsBackgroundColor(S.MARGINS_BG_COLOR)
 
     def set_lexer(self, lexer: str):
         if lexer not in self.lang_lexer:
             new_lexer = None
-            print("Lexer not found")
         else:
             new_lexer = self.lang_lexer[lexer](self)
 
@@ -129,6 +165,3 @@ class TextArea(QsciScintilla):
         if size < 2:
             size = 2
         self.setMarginWidth(0, "0" * size)
-
-    def get_name(self):
-        return self.name
