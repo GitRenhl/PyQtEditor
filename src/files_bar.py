@@ -22,6 +22,11 @@ class FilesBar(QTabWidget):
         self.removeTab(index)
         self.tabs.pop(index)
 
+    def get_text_from_current_tab(self):
+        if self.is_open_something():
+            return self.currentWidget().toPlainText()
+        return False
+
     def is_open_something(self):
         return self.currentIndex() >= 0
 
