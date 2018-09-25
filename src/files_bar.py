@@ -32,3 +32,23 @@ class FilesBar(QTabWidget):
 
     def is_current_path(self):
         return self.currentWidget().file_path is None
+
+    def undo(self):
+        if self.is_open_something():
+            self.currentWidget().undo()
+
+    def redo(self):
+        if self.is_open_something():
+            self.currentWidget().redo()
+
+    def cut(self):
+        if self.is_open_something():
+            self.currentWidget().cut()
+
+    def copy(self):
+        if self.is_open_something():
+            self.currentWidget().copy()
+
+    def paste(self):
+        if self.is_open_something():
+            self.currentWidget().paste()

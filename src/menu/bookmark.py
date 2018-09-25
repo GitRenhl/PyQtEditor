@@ -14,7 +14,13 @@ class Bookmark:
             'exit': QAction("&Exit", master),
         }
         self.EDIT = {
-            'soon': QAction("&Soon", master),
+            'undo': QAction("&Undo", master),
+            'redo': QAction("&Redo", master),
+            'sep1': self.__get_separator(master),
+            'cut': QAction("Cu&t", master),
+            'copy': QAction("&Copy", master),
+            'sep2': self.__get_separator(master),
+            'paste': QAction("&Paste", master),
         }
         self.VIEW = {
             'soon': QAction("&Soon", master),

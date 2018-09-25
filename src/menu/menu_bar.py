@@ -66,6 +66,26 @@ class MenuBar(QMenuBar):
             self.menu_file.addAction(self.bookmarks.FILE[key])
 
     def _set_edit_menu(self):
+        self.bookmarks.EDIT['undo'].setShortcut("Ctrl+Z")
+        self.bookmarks.EDIT['undo'].triggered.connect(
+            lambda: self.undo.emit())
+
+        self.bookmarks.EDIT['redo'].setShortcut("Ctrl+Y")
+        self.bookmarks.EDIT['redo'].triggered.connect(
+            lambda: self.redo.emit())
+
+        self.bookmarks.EDIT['cut'].setShortcut("Ctrl+X")
+        self.bookmarks.EDIT['cut'].triggered.connect(
+            lambda: self.cut.emit())
+
+        self.bookmarks.EDIT['copy'].setShortcut("Ctrl+C")
+        self.bookmarks.EDIT['copy'].triggered.connect(
+            lambda: self.copy.emit())
+
+        self.bookmarks.EDIT['paste'].setShortcut("Ctrl+V")
+        self.bookmarks.EDIT['paste'].triggered.connect(
+            lambda: self.paste.emit())
+
         for key in self.bookmarks.EDIT:
             self.menu_edit.addAction(self.bookmarks.EDIT[key])
 

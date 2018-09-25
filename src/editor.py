@@ -34,6 +34,12 @@ class Editor(QMainWindow):
         self._menu_bar.open_file.connect(self.open_file)
         self._menu_bar.close_window.connect(self.quit)
 
+        self._menu_bar.undo.connect(self.files_tabs.undo)
+        self._menu_bar.redo.connect(self.files_tabs.redo)
+        self._menu_bar.cut.connect(self.files_tabs.cut)
+        self._menu_bar.copy.connect(self.files_tabs.copy)
+        self._menu_bar.paste.connect(self.files_tabs.paste)
+
     def new_file(self):
         dialog = NewFile(self)
         dialog.exec_()

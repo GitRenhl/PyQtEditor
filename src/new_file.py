@@ -48,7 +48,6 @@ class NewFile(QDialog):
         self.setLayout(main_lay)
 
     def __btn_ok_click(self):
-        print("test")
         self.__btn_create_clicked = True
         if self.name.text() == "":
             self.name.setText("Untilted")
