@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication
-from .menuBar import MenuBar
+from .menu.menu_bar import MenuBar
 from .files_bar import FilesBar
 from .new_file import NewFile
 
@@ -42,7 +42,6 @@ class Editor(QMainWindow):
         # self.update_status_bar()
 
     def save_file(self):
-        # TODO
         valid = True
         if not self.files_tabs.is_open_something():
             valid = False
@@ -54,11 +53,9 @@ class Editor(QMainWindow):
             print(self.files_tabs.currentWidget().toPlainText())
 
     def save_file_as(self):
-        # TODO
         print("Save as...")
 
     def open_file(self):
-        # TODO
         print("open")
 
     def quit(self):
