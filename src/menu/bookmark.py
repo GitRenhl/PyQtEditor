@@ -11,6 +11,8 @@ class Bookmark:
             'sep2': self.__get_separator(master),
             'open': QAction("&Open File...", master),
             'sep3': self.__get_separator(master),
+            'close_tab': QAction("Close window", master),
+            'sep4': self.__get_separator(master),
             'exit': QAction("&Exit", master),
         }
         self.EDIT = {

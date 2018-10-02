@@ -10,7 +10,8 @@ class MenuBar(QMenuBar):
     save_file = pyqtSignal()
     save_file_as = pyqtSignal()
     open_file = pyqtSignal()
-    close_window = pyqtSignal()
+    close_tab = pyqtSignal()
+    close_program = pyqtSignal()
     # edit tab
     undo = pyqtSignal()
     redo = pyqtSignal()
@@ -58,8 +59,13 @@ class MenuBar(QMenuBar):
             lambda: self.open_file.emit()
         )
 
+        self.bookmarks.FILE['close_tab'].setShortcut("Ctrl+W")
+        self.bookmarks.FILE['close_tab'].triggered.connect(
+            lambda: self.close_tab.emit()
+        )
+
         self.bookmarks.FILE['exit'].triggered.connect(
-            lambda: self.close_window.emit()
+            lambda: self.close_program.emit()
         )
 
         for key in self.bookmarks.FILE:

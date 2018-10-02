@@ -34,7 +34,8 @@ class Editor(QMainWindow):
         self._menu_bar.save_file.connect(self.save_file)
         self._menu_bar.save_file_as.connect(self.save_file_as)
         self._menu_bar.open_file.connect(self.open_file)
-        self._menu_bar.close_window.connect(self.quit)
+        self._menu_bar.close_tab.connect(self.files_tabs.close_tab)
+        self._menu_bar.close_program.connect(self.quit)
 
         self._menu_bar.undo.connect(self.files_tabs.undo)
         self._menu_bar.redo.connect(self.files_tabs.redo)
