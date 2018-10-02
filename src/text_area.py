@@ -107,21 +107,43 @@ class TextArea(QsciScintilla):
                  path: str = None):
         super().__init__()
 
-        tmp = name.split(".")
-        self.file_path = path
-        self.full_name = name
-        if len(tmp) > 1:
-            self.extension = tmp[-1]
-        else:
-            self.extension = None
+        self.__path = path
+        self.__full_name = name
+        self.extension = self.__get_extension(name)
         self.current_lang = None
         self.__font = QFont("Consolas, 'Courier New', monospace", 18)
         self.setup_editor()
 
+    def get_name(self):
+        return self.__full_name
+
+    def get_path(self):
+        return self.__path
+
+    @staticmethod
+    def __get_extension(name):
+        tmp = name.split(".")
+        if len(tmp) > 1:
+            return tmp[-1]
+        return None
+
+    @classmethod
+    def get_language(cls, extension: str):
+        if extension not in cls.extension_to_lang:
+            return None
+
+        return cls.extension_to_lang[extension]
+
+    def get_lexer(self, language: str):
+        if language not in self.lang_lexer:
+            return None
+
+        return self.lang_lexer[language](self)
+
     def setup_editor(self):
         # FONT #
         self.setUtf8(S.UTF8)
-        lang = self.extension_to_lang.get(self.extension)
+        lang = self.get_language(self.extension)
         self.set_lexer(lang)
 
         # Tab
@@ -143,15 +165,11 @@ class TextArea(QsciScintilla):
         self.set_margin_num_width()
         self.setMarginsBackgroundColor(S.MARGINS_BG_COLOR)
 
-    def set_lexer(self, lexer: str):
-        if lexer not in self.lang_lexer:
-            new_lexer = None
-        else:
-            new_lexer = self.lang_lexer[lexer](self)
-
+    def set_lexer(self, lang: str):
+        new_lexer = self.get_lexer(lang)
         self.setLexer(new_lexer)
 
-        self.current_lang = lexer if lexer in self.lang_lexer else None
+        self.current_lang = lang if lang in self.lang_lexer else None
         self.__update_font()
 
     def __update_font(self):
@@ -165,3 +183,12 @@ class TextArea(QsciScintilla):
         if size < 2:
             size = 2
         self.setMarginWidth(0, "0" * size)
+
+    def change_name(self, name: str):
+        self.__full_name = name
+        self.extension = self.__get_extension(name)
+        lang = self.get_language(self.extension)
+        self.set_lexer(lang)
+
+    def change_path(self, path: str):
+        self.__path = path

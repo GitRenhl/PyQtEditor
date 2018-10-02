@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from os.path import split as split_pathname
+from os.path import exists as is_file_exists
+from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
 from .menu.menu_bar import MenuBar
 from .files_bar import FilesBar
 from .new_file import NewFile
@@ -13,7 +15,7 @@ class Editor(QMainWindow):
 
         self._menu_bar = MenuBar()
         self.files_tabs = FilesBar()
-        # self.status_bar = self.statusBar()
+        self.status_bar = self.statusBar()
         self.init_ui()
 
         self.confSignals()
@@ -45,31 +47,61 @@ class Editor(QMainWindow):
         dialog.exec_()
         if dialog.is_create_clicked():
             self.files_tabs.open_tab(dialog.name.text())
-        # self.update_status_bar()
+
+    def __save(self, path: str, text: str) -> bool:
+        try:
+            with open(path, 'w') as f:
+                f.write(text)
+        except Exception as e:
+            print(e)
+            return False
+        return True
 
     def save_file(self):
-        valid = True
         if not self.files_tabs.is_open_something():
-            valid = False
-        elif self.files_tabs.is_current_path():
-            valid = False
-            self.save_file_as()
+            return
+        if self.files_tabs.is_current_path():
+            return self.save_file_as()
 
-        if valid:
-            print(self.files_tabs.currentWidget().toPlainText())
+        data = self.files_tabs.get_current_text()
+        path = self.files_tabs.get_current_path()
+        file_name = self.files_tabs.get_current_name()
+        full_path = path + "/" + file_name
+
+        if not is_file_exists(full_path):
+            # show error on status bar
+            return
+        is_saved = self.__save(full_path, data)
+
+        if not is_saved:
+            # show error on status bar
+            return
 
     def save_file_as(self):
-        print("Save as...")
+        if not self.files_tabs.is_open_something():
+            return
+
+        file_name = QFileDialog.getSaveFileName(
+            self, "Save as...",
+            self.files_tabs.get_current_name(),
+            "All Files (*.*)"
+        )[0]
+
+        if file_name == '':
+            return
+
+        data = self.files_tabs.get_current_text()
+        is_saved = self.__save(file_name, data)
+        if not is_saved:
+            # show erron on status bar
+            return
+
+        new_path, new_name = split_pathname(file_name)
+        self.files_tabs.update_name(new_name)
+        self.files_tabs.update_path(new_path)
 
     def open_file(self):
         print("open")
 
     def quit(self):
         QApplication.quit()
-
-    # def update_status_bar(self):
-    #     text = self.files_tabs.currentWidget().toPlainText()
-    #     self.status_bar.showMessage("Words:{} Length:{}".format(
-    #         len(text),
-    #         text.count("\n")
-    #     ))

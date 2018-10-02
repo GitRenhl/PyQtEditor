@@ -22,16 +22,37 @@ class FilesBar(QTabWidget):
         self.removeTab(index)
         self.tabs.pop(index)
 
-    def get_text_from_current_tab(self):
-        if self.is_open_something():
-            return self.currentWidget().toPlainText()
-        return False
+    def get_current_name(self):
+        if not self.is_open_something():
+            return False
+        return self.currentWidget().get_name()
+
+    def get_current_text(self):
+        if not self.is_open_something():
+            return False
+        return self.currentWidget().text()
+
+    def get_current_path(self):
+        if not self.is_open_something() and self.is_current_path():
+            return False
+        return self.currentWidget().get_path()
 
     def is_open_something(self):
         return self.currentIndex() >= 0
 
     def is_current_path(self):
-        return self.currentWidget().file_path is None
+        return self.currentWidget().get_path() is None
+
+    def update_name(self, name: str):
+        if not self.is_open_something():
+            return False
+        self.setTabText(self.currentIndex(), name)
+        self.currentWidget().change_name(name)
+
+    def update_path(self, path: str):
+        if not self.is_open_something():
+            return False
+        self.currentWidget().change_path(path)
 
     def undo(self):
         if self.is_open_something():
