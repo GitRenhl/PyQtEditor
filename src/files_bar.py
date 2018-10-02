@@ -18,7 +18,6 @@ class FilesBar(QTabWidget):
         self.setCurrentIndex(len(self.tabs) - 1)
 
     def close_tab(self, index: int):
-        print("Closed:", index)
         self.removeTab(index)
         self.tabs.pop(index)
 
@@ -46,8 +45,9 @@ class FilesBar(QTabWidget):
     def update_name(self, name: str):
         if not self.is_open_something():
             return False
-        self.setTabText(self.currentIndex(), name)
         self.currentWidget().change_name(name)
+        self.setTabText(self.currentIndex(), name)
+        self.tabs[self.currentIndex()] = name
 
     def update_path(self, path: str):
         if not self.is_open_something():
