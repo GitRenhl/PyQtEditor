@@ -30,7 +30,7 @@ class FilesBar(QTabWidget):
     def get_current_text(self):
         if not self.is_open_something():
             return False
-        return self.currentWidget().text()
+        return self.currentWidget().text().replace("\r", '')
 
     def get_current_path(self):
         if not self.is_open_something() and self.is_current_path():
