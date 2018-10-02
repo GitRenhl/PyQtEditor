@@ -48,7 +48,8 @@ class Editor(QMainWindow):
         if dialog.is_create_clicked():
             self.files_tabs.open_tab(dialog.name.text())
 
-    def __save(self, path: str, text: str) -> bool:
+    @staticmethod
+    def __save(path: str, text: str) -> bool:
         try:
             with open(path, 'w') as f:
                 f.write(text)
@@ -69,8 +70,8 @@ class Editor(QMainWindow):
         full_path = path + "/" + file_name
 
         if not is_file_exists(full_path):
-            # show error on status bar
-            return
+            return self.save_file_as()
+
         is_saved = self.__save(full_path, data)
 
         if not is_saved:
@@ -93,15 +94,27 @@ class Editor(QMainWindow):
         data = self.files_tabs.get_current_text()
         is_saved = self.__save(file_name, data)
         if not is_saved:
-            # show erron on status bar
+            # show error on status bar
             return
 
         new_path, new_name = split_pathname(file_name)
         self.files_tabs.update_name(new_name)
         self.files_tabs.update_path(new_path)
 
+    @staticmethod
+    def __open(path: str) -> str:
+        with open(path, 'r') as f:
+            text = f.read()
+
+        return text
+
     def open_file(self):
-        print("open")
+        file_path = QFileDialog.getOpenFileName(self, "Open file")[0]
+
+        path, name = split_pathname(file_path)
+        text = self.__open(file_path)
+        print(text)
+        self.files_tabs.open_tab(name, text, path)
 
     def quit(self):
         QApplication.quit()
