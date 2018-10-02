@@ -109,6 +109,7 @@ class TextArea(QsciScintilla):
 
         self.__path = path
         self.__full_name = name
+        self.setText(data)
         self.extension = self.__get_extension(name)
         self.current_lang = None
         self.__font = QFont("Consolas, 'Courier New', monospace", 18)
