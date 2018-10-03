@@ -106,3 +106,21 @@ class MenuBar(QMenuBar):
     def _set_help_menu(self):
         for key in self.bookmarks.HELP:
             self.menu_help.addAction(self.bookmarks.HELP[key])
+
+    def disable_editing(self):
+        file = ("save", "save_as", "close_tab")
+        edit = ("undo", "redo", "cut", "copy", "paste")
+
+        for i in file:
+            self.bookmarks.FILE[i].setDisabled(True)
+        for i in edit:
+            self.bookmarks.EDIT[i].setDisabled(True)
+
+    def enable_editing(self):
+        file = ("save", "save_as", "close_tab")
+        edit = ("undo", "redo", "cut", "copy", "paste")
+
+        for i in file:
+            self.bookmarks.FILE[i].setEnabled(True)
+        for i in edit:
+            self.bookmarks.EDIT[i].setEnabled(True)

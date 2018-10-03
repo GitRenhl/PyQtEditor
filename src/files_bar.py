@@ -1,8 +1,11 @@
 from .text_area import TextArea
 from PyQt5.QtWidgets import QTabWidget
+from PyQt5.QtCore import pyqtSignal
 
 
 class FilesBar(QTabWidget):
+    new_tab = pyqtSignal()
+    nothing_open = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -12,6 +15,8 @@ class FilesBar(QTabWidget):
         self.tabs = []
 
     def open_tab(self, name: str="Untilted", data: str="", path=None):
+        if not self.is_open_something():
+            self.new_tab.emit()
         text_widget = TextArea(name, data, path)
         self.addTab(text_widget, name)
         self.tabs.append(name)
@@ -24,6 +29,8 @@ class FilesBar(QTabWidget):
             index = self.currentIndex()
         self.removeTab(index)
         self.tabs.pop(index)
+        if self.count() == 0:
+            self.nothing_open.emit()
 
     def get_current_name(self):
         if not self.is_open_something():

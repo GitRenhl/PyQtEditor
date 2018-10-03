@@ -16,13 +16,12 @@ class Editor(QMainWindow):
         self._menu_bar = MenuBar()
         self.files_tabs = FilesBar()
         self.status_bar = self.statusBar()
-        self.init_ui()
 
+        self.init_ui()
         self.confSignals()
 
-        # self.new_file()
-
     def init_ui(self):
+        self._menu_bar.disable_editing()
         self.setMenuBar(self._menu_bar)
         self.setCentralWidget(self.files_tabs)
 
@@ -42,6 +41,9 @@ class Editor(QMainWindow):
         self._menu_bar.cut.connect(self.files_tabs.cut)
         self._menu_bar.copy.connect(self.files_tabs.copy)
         self._menu_bar.paste.connect(self.files_tabs.paste)
+
+        self.files_tabs.new_tab.connect(self._menu_bar.enable_editing)
+        self.files_tabs.nothing_open.connect(self._menu_bar.disable_editing)
 
     def new_file(self):
         dialog = NewFile(self)
@@ -104,9 +106,12 @@ class Editor(QMainWindow):
 
     @staticmethod
     def __open(path: str) -> str:
-        with open(path, 'r') as f:
-            text = f.read()
-
+        try:
+            with open(path, 'r') as f:
+                text = f.read()
+        except Exception as e:
+            print(e)
+            return
         return text
 
     def open_file(self):
@@ -117,7 +122,9 @@ class Editor(QMainWindow):
 
         path, name = split_pathname(file_path)
         text = self.__open(file_path)
-        print(text)
+        if text is None:
+            # show error on status bar
+            return
         self.files_tabs.open_tab(name, text, path)
 
     def quit(self):
