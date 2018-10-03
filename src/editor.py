@@ -112,6 +112,9 @@ class Editor(QMainWindow):
     def open_file(self):
         file_path = QFileDialog.getOpenFileName(self, "Open file")[0]
 
+        if file_path == "":
+            return
+
         path, name = split_pathname(file_path)
         text = self.__open(file_path)
         print(text)

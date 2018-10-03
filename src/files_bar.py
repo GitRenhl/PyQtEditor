@@ -18,6 +18,8 @@ class FilesBar(QTabWidget):
         self.setCurrentIndex(len(self.tabs) - 1)
 
     def close_tab(self, index: int = None):
+        if not self.is_open_something():
+            return
         if index is None:
             index = self.currentIndex()
         self.removeTab(index)
