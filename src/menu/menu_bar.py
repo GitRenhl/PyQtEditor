@@ -18,6 +18,7 @@ class MenuBar(QMenuBar):
     cut = pyqtSignal()
     copy = pyqtSignal()
     paste = pyqtSignal()
+    replace_in_file = pyqtSignal()
     # view tab
     # settings tab
     # help tab
@@ -92,6 +93,10 @@ class MenuBar(QMenuBar):
         self.bookmarks.EDIT['paste'].triggered.connect(
             lambda: self.paste.emit())
 
+        self.bookmarks.EDIT['replace_in_file'].setShortcut("Ctrl+H")
+        self.bookmarks.EDIT['replace_in_file'].triggered.connect(
+            lambda: self.replace_in_file.emit())
+
         for key in self.bookmarks.EDIT:
             self.menu_edit.addAction(self.bookmarks.EDIT[key])
 
@@ -109,7 +114,7 @@ class MenuBar(QMenuBar):
 
     def disable_editing(self):
         file = ("save", "save_as", "close_tab")
-        edit = ("undo", "redo", "cut", "copy", "paste")
+        edit = ("undo", "redo", "cut", "copy", "paste", "replace_in_file")
 
         for i in file:
             self.bookmarks.FILE[i].setDisabled(True)
@@ -118,7 +123,7 @@ class MenuBar(QMenuBar):
 
     def enable_editing(self):
         file = ("save", "save_as", "close_tab")
-        edit = ("undo", "redo", "cut", "copy", "paste")
+        edit = ("undo", "redo", "cut", "copy", "paste", "replace_in_file")
 
         for i in file:
             self.bookmarks.FILE[i].setEnabled(True)

@@ -65,6 +65,11 @@ class FilesBar(QTabWidget):
             return False
         self.currentWidget().change_path(path)
 
+    def replace_in_text(self, old: str, new: str):
+        self.currentWidget().setText(
+            self.currentWidget().text().replace(old, new)
+        )
+
     def undo(self):
         if self.is_open_something():
             self.currentWidget().undo()

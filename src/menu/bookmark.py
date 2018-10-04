@@ -21,8 +21,9 @@ class Bookmark:
             'sep1': self.__get_separator(master),
             'cut': QAction("Cu&t", master),
             'copy': QAction("&Copy", master),
-            'sep2': self.__get_separator(master),
             'paste': QAction("&Paste", master),
+            'sep2': self.__get_separator(master),
+            'replace_in_file': QAction("&Replace in file", master),
         }
         self.VIEW = {
             'soon': QAction("&Soon", master),

@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
 from .menu.menu_bar import MenuBar
 from .files_bar import FilesBar
 from .new_file import NewFile
+from .find_and_replace import FindAndReplace
 
 
 class Editor(QMainWindow):
@@ -41,9 +42,13 @@ class Editor(QMainWindow):
         self._menu_bar.cut.connect(self.files_tabs.cut)
         self._menu_bar.copy.connect(self.files_tabs.copy)
         self._menu_bar.paste.connect(self.files_tabs.paste)
+        self._menu_bar.replace_in_file.connect(self.replace_in_file)
 
         self.files_tabs.new_tab.connect(self._menu_bar.enable_editing)
         self.files_tabs.nothing_open.connect(self._menu_bar.disable_editing)
+
+    def replace_in_file(self):
+        dialog = FindAndReplace(self)
 
     def new_file(self):
         dialog = NewFile(self)
