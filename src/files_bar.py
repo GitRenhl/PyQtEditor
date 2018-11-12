@@ -19,8 +19,7 @@ class FilesBar(QTabWidget):
             self.new_tab.emit()
         text_widget = TextArea(name, data, path)
         self.addTab(text_widget, name)
-        self.tabs.append(name)
-        self.setCurrentIndex(len(self.tabs) - 1)
+        self.setCurrentIndex(self.count()-1)
 
     def close_tab(self, index: int = None):
         if not self.is_open_something():
@@ -28,7 +27,6 @@ class FilesBar(QTabWidget):
         if index is None:
             index = self.currentIndex()
         self.removeTab(index)
-        self.tabs.pop(index)
         if self.count() == 0:
             self.nothing_open.emit()
 
@@ -48,7 +46,7 @@ class FilesBar(QTabWidget):
         return self.currentWidget().get_path()
 
     def is_open_something(self):
-        return self.currentIndex() >= 0
+        return self.count() != 0
 
     def is_current_path(self):
         return self.currentWidget().get_path() is None
@@ -58,7 +56,6 @@ class FilesBar(QTabWidget):
             return False
         self.currentWidget().change_name(name)
         self.setTabText(self.currentIndex(), name)
-        self.tabs[self.currentIndex()] = name
 
     def update_path(self, path: str):
         if not self.is_open_something():
@@ -89,3 +86,6 @@ class FilesBar(QTabWidget):
     def paste(self):
         if self.is_open_something():
             self.currentWidget().paste()
+
+    def count_text(self, text: str) -> int:
+        return self.currentWidget().count(text)

@@ -9,7 +9,7 @@ class Bookmark:
             'save': QAction("&Save", master),
             'save_as': QAction("Save &As...", master),
             'sep2': self.__get_separator(master),
-            'open': QAction("&Open File...", master),
+            'open_file': QAction("&Open File...", master),
             'sep3': self.__get_separator(master),
             'close_tab': QAction("Close window", master),
             'sep4': self.__get_separator(master),

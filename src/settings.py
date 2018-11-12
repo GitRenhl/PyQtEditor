@@ -16,7 +16,7 @@ class Settings:
     SCROLL_WIDTH = 1
 
     # WarpMode
-    WRAP_MODE = QsciScintilla.WrapWhitespace
+    WRAP_MODE = QsciScintilla.WrapCharacter
 
     # Cursor
     CARET_LINE_VISIBLE = True

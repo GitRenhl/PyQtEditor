@@ -24,6 +24,9 @@ class MenuBar(QMenuBar):
     # help tab
     about = pyqtSignal()
 
+    __file = ("save", "save_as", "close_tab")
+    __edit = ("undo", "redo", "cut", "copy", "paste", "replace_in_file")
+
     def __init__(self):
         super().__init__()
         self.menu_file = self.addMenu("&File")
@@ -34,6 +37,9 @@ class MenuBar(QMenuBar):
 
         self.bookmarks = Bookmark(self)
 
+        self.setup()
+
+    def setup(self):
         self._set_file_menu()
         self._set_edit_menu()
         self._set_view_menu()
@@ -55,8 +61,8 @@ class MenuBar(QMenuBar):
         self.bookmarks.FILE['save_as'].triggered.connect(
             lambda: self.save_file_as.emit())
 
-        self.bookmarks.FILE['open'].setShortcut("Ctrl+O")
-        self.bookmarks.FILE['open'].triggered.connect(
+        self.bookmarks.FILE['open_file'].setShortcut("Ctrl+O")
+        self.bookmarks.FILE['open_file'].triggered.connect(
             lambda: self.open_file.emit()
         )
 
@@ -113,19 +119,13 @@ class MenuBar(QMenuBar):
             self.menu_help.addAction(self.bookmarks.HELP[key])
 
     def disable_editing(self):
-        file = ("save", "save_as", "close_tab")
-        edit = ("undo", "redo", "cut", "copy", "paste", "replace_in_file")
-
-        for i in file:
+        for i in self.__file:
             self.bookmarks.FILE[i].setDisabled(True)
-        for i in edit:
+        for i in self.__edit:
             self.bookmarks.EDIT[i].setDisabled(True)
 
     def enable_editing(self):
-        file = ("save", "save_as", "close_tab")
-        edit = ("undo", "redo", "cut", "copy", "paste", "replace_in_file")
-
-        for i in file:
+        for i in self.__file:
             self.bookmarks.FILE[i].setEnabled(True)
-        for i in edit:
+        for i in self.__edit:
             self.bookmarks.EDIT[i].setEnabled(True)

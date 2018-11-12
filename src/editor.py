@@ -48,7 +48,7 @@ class Editor(QMainWindow):
         self.files_tabs.nothing_open.connect(self._menu_bar.disable_editing)
 
     def replace_in_file(self):
-        dialog = FindAndReplace(self)
+        FindAndReplace(self)
 
     def new_file(self):
         dialog = NewFile(self)

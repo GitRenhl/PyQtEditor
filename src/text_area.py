@@ -108,7 +108,7 @@ class TextArea(QsciScintilla):
         super().__init__()
 
         self.__path = path
-        self.__full_name = name
+        self.__name = name
         self.setText(data)
         self.extension = self.__get_extension(name)
         self.current_lang = None
@@ -116,7 +116,7 @@ class TextArea(QsciScintilla):
         self.setup_editor()
 
     def get_name(self):
-        return self.__full_name
+        return self.__name
 
     def get_path(self):
         return self.__path
@@ -186,10 +186,13 @@ class TextArea(QsciScintilla):
         self.setMarginWidth(0, "0" * size)
 
     def change_name(self, name: str):
-        self.__full_name = name
+        self.__name = name
         self.extension = self.__get_extension(name)
         lang = self.get_language(self.extension)
         self.set_lexer(lang)
 
     def change_path(self, path: str):
         self.__path = path
+
+    def count(self, string: str) -> int:
+        return self.text().count(string)

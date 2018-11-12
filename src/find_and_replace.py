@@ -15,6 +15,10 @@ class FindAndReplace(QDialog):
         self.master = parent
         self.find = QLineEdit()
         self.replace = QLineEdit()
+
+        self.status_bar = QLabel()
+        self.status_bar.setText("Simple Text")
+
         self.setup_ui()
 
         self.show()
@@ -24,7 +28,7 @@ class FindAndReplace(QDialog):
         self.resize(300, 80)
         self.setWindowModality(Qt.ApplicationModal)
 
-        main_lay = QHBoxLayout()
+        main_lay = QVBoxLayout()
         lay1 = QVBoxLayout()
         lay1_1 = QHBoxLayout()
         lay1_2 = QHBoxLayout()
@@ -50,14 +54,26 @@ class FindAndReplace(QDialog):
         # LAY 2 #
         btn_replace_all = QPushButton("Replace all")
         btn_replace_all.clicked.connect(self.__btn_replace_all_click)
+        btn_count = QPushButton("Count")
+        btn_count.clicked.connect(self.__btn_count)
         btn_exit = QPushButton("Exit")
         btn_exit.clicked.connect(self.close)
         lay2.addWidget(btn_replace_all)
+        lay2.addWidget(btn_count)
         lay2.addWidget(btn_exit)
 
+        # MESSAGE LEY
+        ley_msg = QVBoxLayout()
+        ley_msg.addWidget(self.status_bar)
+
+        # ACTION LAY
+        action_lay = QHBoxLayout()
+        action_lay.addLayout(lay1)
+        action_lay.addLayout(lay2)
+
         # MAIN LAY #
-        main_lay.addLayout(lay1)
-        main_lay.addLayout(lay2)
+        main_lay.addLayout(action_lay)
+        main_lay.addLayout(ley_msg)
 
         self.setLayout(main_lay)
 
@@ -67,3 +83,8 @@ class FindAndReplace(QDialog):
         self.master.files_tabs.replace_in_text(
             old, new
         )
+
+    def __btn_count(self):
+        counter = self.master.files_tabs.count_text(self.find.text())
+        self.status_bar.setStyleSheet("QLabel {color: blue;}")
+        self.status_bar.setText(f"Count: {counter} matches.")
