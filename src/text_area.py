@@ -193,5 +193,9 @@ class TextArea(QsciScintilla):
     def change_path(self, path: str):
         self.__path = path
 
-    def count(self, string: str) -> int:
-        return self.text().count(string)
+    def count(self, string: str, case: bool) -> int:
+        if case:
+            counter = self.text().count(string)
+        else:
+            counter = self.text().lower().count(string.lower())
+        return counter

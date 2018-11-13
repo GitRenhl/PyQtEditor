@@ -8,7 +8,7 @@ class FilesBar(QTabWidget):
     new_tab = pyqtSignal()
     nothing_open = pyqtSignal()
 
-    _ICON_DOT = QIcon("dot-dark.png")
+    _ICON_DOT = QIcon("assets/dot-dark.png")
 
     def __init__(self):
         super().__init__()
@@ -104,5 +104,9 @@ class FilesBar(QTabWidget):
         if self.is_open_something():
             self.currentWidget().paste()
 
-    def count_text(self, text: str) -> int:
-        return self.currentWidget().count(text)
+    def count_text(
+            self,
+            string: str,
+            *,
+            case: bool=True) -> int:
+        return self.currentWidget().count(string, case)

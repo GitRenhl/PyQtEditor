@@ -66,9 +66,9 @@ class FindAndReplace(QDialog):
         # CHECKBOXES #
         # TODO read from cache
         self._whole_words.setChecked(False)
-        self._whole_words.setText("Match case")
+        self._whole_words.setText("Match whole words only")
         self._case_sensitive.setChecked(False)
-        self._case_sensitive.setText("Match whole words only")
+        self._case_sensitive.setText("Match case")
         self._wraps.setChecked(True)
         self._wraps.setText("Wraps around")
 
@@ -112,6 +112,7 @@ class FindAndReplace(QDialog):
         self.setLayout(main_lay)
 
     def __btn_replace_click(self):
+        self.status_bar.setText('')
         self._master.files_tabs.currentWidget().replace(self._replace.text())
 
     def __btn_replace_all_click(self):
@@ -127,16 +128,13 @@ class FindAndReplace(QDialog):
             curWidg().replace(self._replace.text())
             replaced += 1
 
-            founded = curWidg().findNext(self._find.text(),
-                                         True,
-                                         self._case_sensitive.isChecked(),
-                                         self._whole_words.isChecked(),
-                                         False)
+            founded = curWidg().findNext()
         self.status_bar.setStyleSheet("QLabel {color: red;}")
         self.status_bar.setText(
             f"{replaced} occurrences were replaced")
 
     def __btn_find(self):
+        self.status_bar.setText('')
         curWidg = self._master.files_tabs.currentWidget
         founded = curWidg().findFirst(self._find.text(),
                                       True,
@@ -146,12 +144,19 @@ class FindAndReplace(QDialog):
         if not founded:
             self.status_bar.setStyleSheet("QLabel {color: red;}")
             self.status_bar.setText(
-                "Can't _find the text \"{}\"".format(
+                "Can't find the text \"{}\"".format(
                     self._find.text()
                 )
             )
 
     def __btn_count(self):
-        counter = self._master.files_tabs.count_text(self._find.text())
+        searched = self._find.text()
+        counter = self._master.files_tabs.count_text(
+            searched,
+            case=self._case_sensitive.isChecked()
+        )
         self.status_bar.setStyleSheet("QLabel {color: blue;}")
         self.status_bar.setText(f"Count: {counter} matches.")
+
+# http://doc.qt.io/archives/qt-4.8/qt-layouts-basiclayouts-example.html
+# group box
