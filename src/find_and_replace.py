@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import QWidget, \
-    QHBoxLayout,\
+from PyQt5.QtWidgets import QHBoxLayout,\
     QVBoxLayout,\
     QDialog,\
     QLineEdit,\
@@ -11,7 +10,7 @@ from PyQt5.QtCore import Qt
 
 class FindAndReplace(QDialog):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         super().__init__(parent)
         self._master = parent
         self._find = QLineEdit()

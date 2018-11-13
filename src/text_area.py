@@ -1,7 +1,6 @@
 from PyQt5.Qsci import QsciScintilla, \
     QsciLexerMakefile,\
     QsciLexerBash, \
-    QsciLexerBatch, \
     QsciLexerCPP, \
     QsciLexerCSS, \
     QsciLexerCSharp, \
