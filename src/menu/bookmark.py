@@ -32,7 +32,7 @@ class Bookmark:
             'soon': QAction("&Soon", master),
         }
         self.HELP = {
-            'About': QAction("&About", master),
+            'about': QAction("&About", master),
         }
 
     def __get_separator(self, master):

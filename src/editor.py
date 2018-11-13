@@ -44,6 +44,8 @@ class Editor(QMainWindow):
         self._menu_bar.paste.connect(self.files_tabs.paste)
         self._menu_bar.replace_in_file.connect(self.replace_in_file)
 
+        self._menu_bar.about.connect(self.show_about)
+
         self.files_tabs.new_tab.connect(self._menu_bar.enable_editing)
         self.files_tabs.nothing_open.connect(self._menu_bar.disable_editing)
 
@@ -131,6 +133,10 @@ class Editor(QMainWindow):
             # show error on status bar
             return
         self.files_tabs.open_tab(name, text, path)
+
+    def show_about(self):
+        from src import about
+        about.show()
 
     def quit(self):
         retval = QMessageBox.Yes

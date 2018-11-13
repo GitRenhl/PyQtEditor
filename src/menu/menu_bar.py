@@ -115,6 +115,9 @@ class MenuBar(QMenuBar):
             self.menu_preferences.addAction(self.bookmarks.PREFERENCES[key])
 
     def _set_help_menu(self):
+        self.bookmarks.HELP['about'].triggered.connect(
+            lambda: self.about.emit()
+        )
         for key in self.bookmarks.HELP:
             self.menu_help.addAction(self.bookmarks.HELP[key])
 
