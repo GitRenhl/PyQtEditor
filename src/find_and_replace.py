@@ -13,13 +13,12 @@ class FindAndReplace(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.master = parent
-        self.find = QLineEdit()
-        self.replace = QLineEdit()
-
-        self.whole_words = QCheckBox()
-        self.case_sensitive = QCheckBox()
-        self.wraps = QCheckBox()
+        self._master = parent
+        self._find = QLineEdit()
+        self._replace = QLineEdit()
+        self._whole_words = QCheckBox()
+        self._case_sensitive = QCheckBox()
+        self._wraps = QCheckBox()
 
         self.status_bar = QLabel()
 
@@ -32,8 +31,8 @@ class FindAndReplace(QDialog):
         self.setFixedSize(350, 180)
         # self.setWindowModality(Qt.ApplicationModal)
         self.setModal(False)
-        self.find.setFixedWidth(160)
-        self.replace.setFixedWidth(160)
+        self._find.setFixedWidth(160)
+        self._replace.setFixedWidth(160)
 
         main_lay = QVBoxLayout()
         lay_inputs_and_buttons = QHBoxLayout()
@@ -54,29 +53,29 @@ class FindAndReplace(QDialog):
         label_find.setText("Find:")
         label_find.setAlignment(Qt.AlignRight)
         lay_input_text_1.addWidget(label_find)
-        lay_input_text_1.addWidget(self.find)
+        lay_input_text_1.addWidget(self._find)
 
         label_replace = QLabel()
         label_replace.setText("Replace:")
         label_replace.setAlignment(Qt.AlignRight)
         lay_input_text_2.addWidget(label_replace)
-        lay_input_text_2.addWidget(self.replace)
+        lay_input_text_2.addWidget(self._replace)
 
         lay_input_text.addLayout(lay_input_text_1)
         lay_input_text.addLayout(lay_input_text_2)
 
         # CHECKBOXES #
         # TODO read from cache
-        self.whole_words.setChecked(False)
-        self.whole_words.setText("Match case")
-        self.case_sensitive.setChecked(False)
-        self.case_sensitive.setText("Match whole words only")
-        self.wraps.setChecked(True)
-        self.wraps.setText("Wraps around")
+        self._whole_words.setChecked(False)
+        self._whole_words.setText("Match case")
+        self._case_sensitive.setChecked(False)
+        self._case_sensitive.setText("Match whole words only")
+        self._wraps.setChecked(True)
+        self._wraps.setText("Wraps around")
 
-        lay_checkboxes.addWidget(self.whole_words)
-        lay_checkboxes.addWidget(self.case_sensitive)
-        lay_checkboxes.addWidget(self.wraps)
+        lay_checkboxes.addWidget(self._whole_words)
+        lay_checkboxes.addWidget(self._case_sensitive)
+        lay_checkboxes.addWidget(self._wraps)
 
         # LAY INPUTS #
         lay_inputs.addLayout(lay_input_text)
@@ -114,44 +113,46 @@ class FindAndReplace(QDialog):
         self.setLayout(main_lay)
 
     def __btn_replace_click(self):
-        self.master.files_tabs.currentWidget().replace(self.replace.text())
+        self._master.files_tabs.currentWidget().replace(self._replace.text())
 
     def __btn_replace_all_click(self):
         self.status_bar.setText('')
-        curWidg = self.master.files_tabs.currentWidget
+        curWidg = self._master.files_tabs.currentWidget
         replaced = 0
-        founded = True
-        while True:
-            founded = curWidg().findFirst(self.find.text(),
-                                          True,
-                                          self.case_sensitive.isChecked(),
-                                          self.whole_words.isChecked(),
-                                          self.wraps.isChecked())
-            if founded:
-                curWidg().replace(self.replace.text())
-                replaced += 1
-            else:
-                self.status_bar.setStyleSheet("QLabel {color: red;}")
-                self.status_bar.setText(
-                    f"{replaced} occurrences were replaced")
-                break
+        founded = curWidg().findFirst(self._find.text(),
+                                      True,
+                                      self._case_sensitive.isChecked(),
+                                      self._whole_words.isChecked(),
+                                      self._wraps.isChecked())
+        while founded:
+            curWidg().replace(self._replace.text())
+            replaced += 1
+
+            founded = curWidg().findNext(self._find.text(),
+                                         True,
+                                         self._case_sensitive.isChecked(),
+                                         self._whole_words.isChecked(),
+                                         False)
+        self.status_bar.setStyleSheet("QLabel {color: red;}")
+        self.status_bar.setText(
+            f"{replaced} occurrences were replaced")
 
     def __btn_find(self):
-        curWidg = self.master.files_tabs.currentWidget
-        founded = curWidg().findFirst(self.find.text(),
+        curWidg = self._master.files_tabs.currentWidget
+        founded = curWidg().findFirst(self._find.text(),
                                       True,
-                                      self.case_sensitive.isChecked(),
-                                      self.whole_words.isChecked(),
-                                      self.wraps.isChecked())
+                                      self._case_sensitive.isChecked(),
+                                      self._whole_words.isChecked(),
+                                      self._wraps.isChecked())
         if not founded:
             self.status_bar.setStyleSheet("QLabel {color: red;}")
             self.status_bar.setText(
-                "Can't find the text \"{}\"".format(
-                    self.find.text()
+                "Can't _find the text \"{}\"".format(
+                    self._find.text()
                 )
             )
 
     def __btn_count(self):
-        counter = self.master.files_tabs.count_text(self.find.text())
+        counter = self._master.files_tabs.count_text(self._find.text())
         self.status_bar.setStyleSheet("QLabel {color: blue;}")
         self.status_bar.setText(f"Count: {counter} matches.")
