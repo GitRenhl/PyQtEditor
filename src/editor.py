@@ -1,6 +1,6 @@
 from os.path import split as split_pathname
 from os.path import exists as is_file_exists
-from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
 from .menu.menu_bar import MenuBar
 from .files_bar import FilesBar
 from .new_file import NewFile
@@ -133,4 +133,16 @@ class Editor(QMainWindow):
         self.files_tabs.open_tab(name, text, path)
 
     def quit(self):
-        QApplication.quit()
+        retval = QMessageBox.Yes
+        if self.files_tabs.is_modified():
+            ask = QMessageBox()
+            ask.setIcon(QMessageBox.Question)
+            ask.setWindowTitle("Exit")
+            ask.setText("You have unsaved files!")
+            ask.setInformativeText("Do you really want to exit?")
+            ask.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            ask.setDefaultButton(QMessageBox.No)
+            retval = ask.exec_()
+
+        if retval == QMessageBox.Yes:
+            QApplication.quit()
