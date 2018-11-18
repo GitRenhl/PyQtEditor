@@ -139,16 +139,6 @@ class Editor(QMainWindow):
         about.show()
 
     def quit(self):
-        retval = QMessageBox.Yes
-        if self.files_tabs.is_modified():
-            ask = QMessageBox()
-            ask.setIcon(QMessageBox.Question)
-            ask.setWindowTitle("Exit")
-            ask.setText("You have unsaved files!")
-            ask.setInformativeText("Do you really want to exit?")
-            ask.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            ask.setDefaultButton(QMessageBox.No)
-            retval = ask.exec_()
-
-        if retval == QMessageBox.Yes:
+        from src.close_file_msg import ask_user_about_unsave_file
+        if not self.files_tabs.is_modified() or ask_user_about_unsave_file():
             QApplication.quit()

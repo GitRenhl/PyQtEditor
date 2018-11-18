@@ -33,10 +33,15 @@ class FilesBar(QTabWidget):
         self.currentWidget().textChanged.connect(self.show_modified_dot)
 
     def close_tab(self, index: int = None):
+        from .close_file_msg import ask_user_about_unsave_file
         if not self.is_open_something():
             return
         if index is None:
             index = self.currentIndex()
+
+        if self.is_modified(index=index) and not ask_user_about_unsave_file():
+            return
+
         self.removeTab(index)
         if self.count() == 0:
             self.nothing_open.emit()
@@ -62,11 +67,23 @@ class FilesBar(QTabWidget):
     def is_current_path(self) -> bool:
         return self.currentWidget().get_path() is None
 
-    def is_modified(self) -> bool:
-        for i in range(self.count()):
-            if self.widget(i).isModified():
-                return True
-        return False
+    def is_modified(self, *, index: int = None) -> bool:
+        valid = False
+
+        def is_modified(index):
+            return self.widget(index).isModified()
+
+        if index is None:
+            for i in range(self.count()):
+                if is_modified(i):
+                    valid = True
+                    break
+        else:
+            assert index >= 0 and index < self.count()
+            if is_modified(index):
+                valid = True
+
+        return valid
 
     def update_name(self, name: str):
         if not self.is_open_something():
@@ -109,4 +126,4 @@ class FilesBar(QTabWidget):
             string: str,
             *,
             case: bool=True) -> int:
-        return self.currentWidget().count(string, case)
+        return self.currentWidget().count(string, case=case)

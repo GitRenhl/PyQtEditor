@@ -126,9 +126,9 @@ class FindAndReplace(QDialog):
                                       self._wraps.isChecked())
         while founded:
             curWidg().replace(self._replace.text())
+            founded = curWidg().findNext()
             replaced += 1
 
-            founded = curWidg().findNext()
         self.status_bar.setStyleSheet("QLabel {color: red;}")
         self.status_bar.setText(
             f"{replaced} occurrences were replaced")
