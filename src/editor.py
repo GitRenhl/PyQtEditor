@@ -35,7 +35,7 @@ class Editor(QMainWindow):
         self._menu_bar.save_file_as.connect(self.save_file_as)
         self._menu_bar.open_file.connect(self.open_file)
         self._menu_bar.close_tab.connect(self.files_tabs.close_tab)
-        self._menu_bar.close_program.connect(self.quit)
+        self._menu_bar.close_program.connect(self.close)
 
         self._menu_bar.undo.connect(self.files_tabs.undo)
         self._menu_bar.redo.connect(self.files_tabs.redo)
@@ -136,9 +136,13 @@ class Editor(QMainWindow):
 
     def show_about(self):
         from src import about
-        about.show()
+        about.show(self)
 
-    def quit(self):
-        from src.close_file_msg import ask_user_about_unsave_file
-        if not self.files_tabs.is_modified() or ask_user_about_unsave_file():
-            QApplication.quit()
+    def closeEvent(self, event):
+        from src.close_file_msg import ask_before_exit
+        is_modify_something = self.files_tabs.is_modified()
+        reply = ask_before_exit(self, is_modify_something)
+        if reply:
+            event.accept()
+        else:
+            event.ignore()
