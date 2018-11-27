@@ -33,13 +33,14 @@ class FilesBar(QTabWidget):
         self.currentWidget().textChanged.connect(self.show_modified_dot)
 
     def close_tab(self, index: int = None):
-        from .close_file_msg import ask_user_about_unsave_file
+        from .close_file_msg import ask_before_exit
         if not self.is_open_something():
             return
         if index is None:
             index = self.currentIndex()
 
-        if self.is_modified(index=index) and not ask_user_about_unsave_file():
+        is_modified = self.is_modified(index=index)
+        if not ask_before_exit(self, is_modified):
             return
 
         self.removeTab(index)
