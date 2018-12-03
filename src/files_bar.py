@@ -40,7 +40,7 @@ class FilesBar(QTabWidget):
             index = self.currentIndex()
 
         is_modified = self.is_modified(index=index)
-        if not ask_before_exit(self, is_modified):
+        if is_modified and not ask_before_exit(self, is_modified):
             return
 
         self.removeTab(index)
