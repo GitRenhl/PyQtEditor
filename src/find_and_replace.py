@@ -117,37 +117,37 @@ class FindAndReplace(QDialog):
 
     def __btn_replace_all_click(self):
         self.status_bar.setText('')
-        curWidg = self._master.files_tabs.currentWidget
-        replaced = 0
-        founded = curWidg().findFirst(self._find.text(),
-                                      True,
-                                      self._case_sensitive.isChecked(),
-                                      self._whole_words.isChecked(),
-                                      self._wraps.isChecked())
-        while founded:
-            curWidg().replace(self._replace.text())
-            founded = curWidg().findNext()
-            replaced += 1
+        NEW_STR = self._replace.text()
+        OLD_STR = self._find.text()
+        currentWidget = self._master.files_tabs.currentWidget()
+        N_TO_REPLACE = currentWidget.count(OLD_STR)
+        replaced_count = 0
+        is_found = currentWidget.findFirst(self._find.text(),
+                                           True,
+                                           self._case_sensitive.isChecked(),
+                                           self._whole_words.isChecked(),
+                                           self._wraps.isChecked())
+
+        while is_found and replaced_count < N_TO_REPLACE:
+            replaced_count += 1
+            currentWidget.replace(NEW_STR)
+            is_found = currentWidget.findNext()
 
         self.status_bar.setStyleSheet("QLabel {color: red;}")
-        self.status_bar.setText(
-            f"{replaced} occurrences were replaced")
+        self.status_bar.setText(f"{replaced_count} occurrences were replaced")
 
     def __btn_find(self):
         self.status_bar.setText('')
-        curWidg = self._master.files_tabs.currentWidget
-        founded = curWidg().findFirst(self._find.text(),
-                                      True,
-                                      self._case_sensitive.isChecked(),
-                                      self._whole_words.isChecked(),
-                                      self._wraps.isChecked())
-        if not founded:
+        currentWidget = self._master.files_tabs.currentWidget()
+        is_found = currentWidget.findFirst(self._find.text(),
+                                           True,
+                                           self._case_sensitive.isChecked(),
+                                           self._whole_words.isChecked(),
+                                           self._wraps.isChecked())
+        if not is_found:
             self.status_bar.setStyleSheet("QLabel {color: red;}")
-            self.status_bar.setText(
-                "Can't find the text \"{}\"".format(
-                    self._find.text()
-                )
-            )
+            self.status_bar.setText("Can't find the text: "
+                                    f'"{self._find.text()}"')
 
     def __btn_count(self):
         searched = self._find.text()
