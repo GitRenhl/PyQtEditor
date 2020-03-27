@@ -127,11 +127,13 @@ class FindAndReplace(QDialog):
                                            self._case_sensitive.isChecked(),
                                            self._whole_words.isChecked(),
                                            self._wraps.isChecked())
-
-        while is_found and replaced_count < N_TO_REPLACE:
-            replaced_count += 1
-            currentWidget.replace(NEW_STR)
+        i = 0
+        while is_found and i < N_TO_REPLACE:
+            if currentWidget.selectedText() != NEW_STR:
+                currentWidget.replace(NEW_STR)
+                replaced_count += 1
             is_found = currentWidget.findNext()
+            i += 1
 
         self.status_bar.setStyleSheet("QLabel {color: red;}")
         self.status_bar.setText(f"{replaced_count} occurrences were replaced")
