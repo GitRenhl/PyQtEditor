@@ -71,42 +71,52 @@ class Editor(QMainWindow):
     def save_file(self):
         if not self.files_tabs.is_open_something():
             return
-        if self.files_tabs.is_current_path():
+        PATH = self.files_tabs.get_current_path()
+        if PATH is None:
             return self.save_file_as()
 
-        data = self.files_tabs.get_current_text()
-        path = self.files_tabs.get_current_path()
-        file_name = self.files_tabs.get_current_name()
-        full_path = path + "/" + file_name
+        FILE_NAME = self.files_tabs.get_current_name()
+        self.status_bar.showMessage(f"Saving file {FILE_NAME}...")
+        FULL_PATH = PATH + "/" + FILE_NAME
 
-        if not is_file_exists(full_path):
+        if not is_file_exists(FULL_PATH):
+            self.status_bar.clearMessage()
             return self.save_file_as()
 
-        is_saved = self.__save(full_path, data)
+        DATA = self.files_tabs.get_current_text()
+        is_saved = self.__save(FULL_PATH, DATA)
 
         if not is_saved:
-            # show error on status bar
-            return
+            self.status_bar.showMessage("Error while saving "
+                                        f"\"{FILE_NAME}\"")
+        else:
+            self.status_bar.showMessage(f"File \"{FILE_NAME}\" "
+                                        "saved successfully")
 
     def save_file_as(self):
         if not self.files_tabs.is_open_something():
             return
+        self.status_bar.showMessage(f"Saving file as...")
         file_name = QFileDialog.getSaveFileName(self,
                                                 "Save as...",
                                                 self.files_tabs.get_current_name(),
                                                 "All Files (*.*)"
                                                 )[0]
         if file_name == '':
+            self.status_bar.clearMessage()
             return
 
         data = self.files_tabs.get_current_text()
         is_saved = self.__save(file_name, data)
         if not is_saved:
-            # show error on status bar
+            self.status_bar.showMessage("Error while saving "
+                                        f"\"{FILE_NAME}\"")
         else:
             new_path, new_name = split_pathname(file_name)
             self.files_tabs.update_name(new_name)
             self.files_tabs.update_path(new_path)
+            self.status_bar.showMessage(f"File \"{new_name}\" "
+                                        "saved successfully")
 
     @staticmethod
     def __open(path: str) -> str:
@@ -126,7 +136,9 @@ class Editor(QMainWindow):
         path, name = split_pathname(file_path)
         text = self.__open(file_path)
         if text is None:
-            # show error on status bar
+            self.status_bar.showMessage("Error while opening "
+                                        f"\"{name}\" file",
+                                        10000)
             return
         self.files_tabs.open_new_tab(name, text, path)
 

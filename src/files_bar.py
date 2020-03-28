@@ -59,15 +59,15 @@ class FilesBar(QTabWidget):
         return self.currentWidget().text().replace("\r", '')
 
     def get_current_path(self) -> str:
-        if not self.is_open_something() and self.is_current_path():
-            return False
+        if not self.is_open_something() or not self.is_current_path():
+            return None
         return self.currentWidget().get_path()
 
     def is_open_something(self) -> bool:
         return self.count() != 0
 
     def is_current_path(self) -> bool:
-        return self.currentWidget().get_path() is None
+        return self.currentWidget().get_path() is not None
 
     def is_modified(self, *, index: int = None) -> bool:
         valid = False
