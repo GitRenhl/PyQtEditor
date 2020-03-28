@@ -18,13 +18,14 @@ class FilesBar(QTabWidget):
         self.tabs = []
 
     def show_modified_dot(self):
-        pass
+        # TODO implement this
         # if self.currentWidget().isModified():
         #     self.setTabIcon(self.currentIndex(), self._ICON_DOT)
         # else:
         #     self.setTabIcon(self.currentIndex(), None)
+        pass
 
-    def open_tab(self, name: str="Untilted", data: str="", path=None):
+    def open_new_tab(self, name: str = "Untilted", data: str = "", path=None):
         if not self.is_open_something():
             self.new_tab.emit()
         text_widget = TextArea(name, data, path)
@@ -98,9 +99,9 @@ class FilesBar(QTabWidget):
         self.currentWidget().change_path(path)
 
     def replace_in_text(self, old: str, new: str):
-        self.currentWidget().setText(
-            self.currentWidget().text().replace(old, new)
-        )
+        currentWidget = self.currentWidget()
+        new_text = currentWidget.text().replace(old, new)
+        currentWidget.setText(new_text)
 
     def undo(self):
         if self.is_open_something():
@@ -122,9 +123,5 @@ class FilesBar(QTabWidget):
         if self.is_open_something():
             self.currentWidget().paste()
 
-    def count_text(
-            self,
-            string: str,
-            *,
-            case: bool=True) -> int:
+    def count_text(self, string: str, *, case: bool = True) -> int:
         return self.currentWidget().count(string, case=case)

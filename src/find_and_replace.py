@@ -117,16 +117,19 @@ class FindAndReplace(QDialog):
 
     def __btn_replace_all_click(self):
         self.status_bar.setText('')
+        currentWidget = self._master.files_tabs.currentWidget()
         NEW_STR = self._replace.text()
         OLD_STR = self._find.text()
-        currentWidget = self._master.files_tabs.currentWidget()
-        N_TO_REPLACE = currentWidget.count(OLD_STR)
+        IS_CASE_SENSITIVE = self._case_sensitive.isChecked()
+        IS_WHOLE_WORDS = self._whole_words.isChecked()
+        IS_WRAPS = self._wraps.isChecked()
+        N_TO_REPLACE = currentWidget.count(OLD_STR,
+                                           case=IS_CASE_SENSITIVE)
+        is_found = currentWidget.findFirst(OLD_STR, True,
+                                           IS_CASE_SENSITIVE,
+                                           IS_WHOLE_WORDS,
+                                           IS_WRAPS)
         replaced_count = 0
-        is_found = currentWidget.findFirst(self._find.text(),
-                                           True,
-                                           self._case_sensitive.isChecked(),
-                                           self._whole_words.isChecked(),
-                                           self._wraps.isChecked())
         i = 0
         while is_found and i < N_TO_REPLACE:
             if currentWidget.selectedText() != NEW_STR:
@@ -152,13 +155,13 @@ class FindAndReplace(QDialog):
                                     f'"{self._find.text()}"')
 
     def __btn_count(self):
-        searched = self._find.text()
-        counter = self._master.files_tabs.count_text(
-            searched,
+        look_for = self._find.text()
+        if look_for == '':
+            return
+        currentWidget = self._master.files_tabs.currentWidget()
+        counter = currentWidget.count(
+            look_for,
             case=self._case_sensitive.isChecked()
         )
         self.status_bar.setStyleSheet("QLabel {color: blue;}")
         self.status_bar.setText(f"Count: {counter} matches.")
-
-# http://doc.qt.io/archives/qt-4.8/qt-layouts-basiclayouts-example.html
-# group box

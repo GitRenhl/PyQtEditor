@@ -27,4 +27,4 @@ def _change_answer_to_bool(answer):
     #
     # QMessageBox.No - QMessageBox.No = 0 return False
     # QMessageBox.No - QMessageBox.Yes = 49152 return True
-    return bool(QMessageBox.No - answer)
+    return QMessageBox.No - answer == 49152

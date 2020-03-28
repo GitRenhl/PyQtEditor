@@ -5,23 +5,25 @@ from .bookmark import Bookmark
 
 class MenuBar(QMenuBar):
 
-    # file tab
+    # FILE tab
     new_file = pyqtSignal()
     save_file = pyqtSignal()
     save_file_as = pyqtSignal()
     open_file = pyqtSignal()
     close_tab = pyqtSignal()
     close_program = pyqtSignal()
-    # edit tab
+    # EDIT tab
     undo = pyqtSignal()
     redo = pyqtSignal()
     cut = pyqtSignal()
     copy = pyqtSignal()
     paste = pyqtSignal()
     replace_in_file = pyqtSignal()
-    # view tab
-    # settings tab
-    # help tab
+    # VIEW tab
+
+    # SETTINGS tab
+
+    # HELP tab
     about = pyqtSignal()
 
     __file = ("save", "save_as", "close_tab")
@@ -36,17 +38,18 @@ class MenuBar(QMenuBar):
         self.menu_help = self.addMenu("&Help")
 
         self.bookmarks = Bookmark(self)
+        self.__is_editing_enable = True
 
-        self.setup()
+        self.__setup()
 
-    def setup(self):
-        self._set_file_menu()
-        self._set_edit_menu()
-        self._set_view_menu()
-        self._set_preferences_menu()
-        self._set_help_menu()
+    def __setup(self):
+        self.__set_file_menu()
+        self.__set_edit_menu()
+        self.__set_view_menu()
+        self.__set_preferences_menu()
+        self.__set_help_menu()
 
-    def _set_file_menu(self):
+    def __set_file_menu(self):
         self.bookmarks.FILE['new'].setShortcut("Ctrl+N")
         self.bookmarks.FILE['new'].triggered.connect(
             lambda: self.new_file.emit()
@@ -78,7 +81,7 @@ class MenuBar(QMenuBar):
         for key in self.bookmarks.FILE:
             self.menu_file.addAction(self.bookmarks.FILE[key])
 
-    def _set_edit_menu(self):
+    def __set_edit_menu(self):
         self.bookmarks.EDIT['undo'].setShortcut("Ctrl+Z")
         self.bookmarks.EDIT['undo'].triggered.connect(
             lambda: self.undo.emit())
@@ -106,15 +109,15 @@ class MenuBar(QMenuBar):
         for key in self.bookmarks.EDIT:
             self.menu_edit.addAction(self.bookmarks.EDIT[key])
 
-    def _set_view_menu(self):
+    def __set_view_menu(self):
         for key in self.bookmarks.VIEW:
             self.menu_view.addAction(self.bookmarks.VIEW[key])
 
-    def _set_preferences_menu(self):
+    def __set_preferences_menu(self):
         for key in self.bookmarks.PREFERENCES:
             self.menu_preferences.addAction(self.bookmarks.PREFERENCES[key])
 
-    def _set_help_menu(self):
+    def __set_help_menu(self):
         self.bookmarks.HELP['about'].triggered.connect(
             lambda: self.about.emit()
         )
@@ -122,12 +125,18 @@ class MenuBar(QMenuBar):
             self.menu_help.addAction(self.bookmarks.HELP[key])
 
     def disable_editing(self):
+        if not self.__is_editing_enable:
+            return
+        self.__is_editing_enable = False
         for i in self.__file:
             self.bookmarks.FILE[i].setDisabled(True)
         for i in self.__edit:
             self.bookmarks.EDIT[i].setDisabled(True)
 
     def enable_editing(self):
+        if self.__is_editing_enable:
+            return
+        self.__is_editing_enable = True
         for i in self.__file:
             self.bookmarks.FILE[i].setEnabled(True)
         for i in self.__edit:

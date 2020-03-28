@@ -18,10 +18,10 @@ class Editor(QMainWindow):
         self.files_tabs = FilesBar()
         self.status_bar = self.statusBar()
 
-        self.init_ui()
-        self.confSignals()
+        self.__init_ui()
+        self.__confSignals()
 
-    def init_ui(self):
+    def __init_ui(self):
         self._menu_bar.disable_editing()
         self.setMenuBar(self._menu_bar)
         self.setCentralWidget(self.files_tabs)
@@ -29,7 +29,7 @@ class Editor(QMainWindow):
     def readSettings(self):
         pass
 
-    def confSignals(self):
+    def __confSignals(self):
         self._menu_bar.new_file.connect(self.new_file)
         self._menu_bar.save_file.connect(self.save_file)
         self._menu_bar.save_file_as.connect(self.save_file_as)
@@ -56,7 +56,7 @@ class Editor(QMainWindow):
         dialog = NewFile(self)
         dialog.exec_()
         if dialog.is_create_clicked():
-            self.files_tabs.open_tab(dialog.name.text())
+            self.files_tabs.open_new_tab(dialog.name.text())
 
     @staticmethod
     def __save(path: str, text: str) -> bool:
@@ -91,13 +91,11 @@ class Editor(QMainWindow):
     def save_file_as(self):
         if not self.files_tabs.is_open_something():
             return
-
-        file_name = QFileDialog.getSaveFileName(
-            self, "Save as...",
-            self.files_tabs.get_current_name(),
-            "All Files (*.*)"
-        )[0]
-
+        file_name = QFileDialog.getSaveFileName(self,
+                                                "Save as...",
+                                                self.files_tabs.get_current_name(),
+                                                "All Files (*.*)"
+                                                )[0]
         if file_name == '':
             return
 
@@ -105,11 +103,10 @@ class Editor(QMainWindow):
         is_saved = self.__save(file_name, data)
         if not is_saved:
             # show error on status bar
-            return
-
-        new_path, new_name = split_pathname(file_name)
-        self.files_tabs.update_name(new_name)
-        self.files_tabs.update_path(new_path)
+        else:
+            new_path, new_name = split_pathname(file_name)
+            self.files_tabs.update_name(new_name)
+            self.files_tabs.update_path(new_path)
 
     @staticmethod
     def __open(path: str) -> str:
@@ -123,7 +120,6 @@ class Editor(QMainWindow):
 
     def open_file(self):
         file_path = QFileDialog.getOpenFileName(self, "Open file")[0]
-
         if file_path == "":
             return
 
@@ -132,7 +128,7 @@ class Editor(QMainWindow):
         if text is None:
             # show error on status bar
             return
-        self.files_tabs.open_tab(name, text, path)
+        self.files_tabs.open_new_tab(name, text, path)
 
     def show_about(self):
         from src import about
@@ -140,8 +136,8 @@ class Editor(QMainWindow):
 
     def closeEvent(self, event):
         from src.close_file_msg import ask_before_exit
-        is_modify_something = self.files_tabs.is_modified()
-        reply = ask_before_exit(self, is_modify_something)
+        is_something_modified = self.files_tabs.is_modified()
+        reply = ask_before_exit(self, is_something_modified)
         if reply:
             event.accept()
         else:

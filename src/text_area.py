@@ -105,23 +105,22 @@ class TextArea(QsciScintilla):
                  data: str = "",
                  path: str = None):
         super().__init__()
-
         self.__path = path
         self.__name = name
         self.setText(data)
         self.extension = self.__get_extension(name)
         self.current_lang = None
         self.__font = QFont("Consolas, 'Courier New', monospace", 18)
-        self.setup_editor()
+        self.__setup_editor()
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.__name
 
-    def get_path(self):
+    def get_path(self) -> str:
         return self.__path
 
     @staticmethod
-    def __get_extension(name):
+    def __get_extension(name: str) -> str:
         tmp = name.split(".")
         if len(tmp) > 1:
             return tmp[-1]
@@ -140,7 +139,7 @@ class TextArea(QsciScintilla):
 
         return self.lang_lexer[language](self)
 
-    def setup_editor(self):
+    def __setup_editor(self):
         # FONT #
         self.setUtf8(S.UTF8)
         lang = self.get_language(self.extension)
@@ -193,7 +192,7 @@ class TextArea(QsciScintilla):
     def change_path(self, path: str):
         self.__path = path
 
-    def count(self, string: str, *, case: bool=False) -> int:
+    def count(self, string: str, *, case: bool = False) -> int:
         if case:
             counter = self.text().count(string)
         else:
