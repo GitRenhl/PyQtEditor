@@ -48,6 +48,7 @@ class FilesBar(QTabWidget):
         if self.count() == 0:
             self.nothing_open.emit()
 
+    # TODO to every get add index param and if param is None then use current widget
     def get_current_name(self):
         if not self.is_open_something():
             return False
@@ -75,17 +76,19 @@ class FilesBar(QTabWidget):
 
         If you use this function without index parametr it will return True
         if any of widgets are modified.'''
-        def is_modified(index):
-            return self.widget(index).isModified()
+        def is_modified_by_i(index):
+            widget = self.widget(index)
+            return widget.isModified()
 
+        valid = False
         if index is None:
-            for i in range(self.count()):
-                if is_modified(i):
+            for index in range(self.count()):
+                if is_modified_by_i(index):
                     valid = True
                     break
         else:
             assert index >= 0 and index < self.count()
-            if is_modified(index):
+            if is_modified_by_i(index):
                 valid = True
 
         return valid
