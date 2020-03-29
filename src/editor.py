@@ -50,9 +50,11 @@ class Editor(QMainWindow):
         self.files_tabs.nothing_open.connect(self._menu_bar.disable_editing)
 
     def replace_in_file(self):
+        '''Open find and replace window'''
         FindAndReplace(self)
 
     def new_file(self):
+        '''Open new file window and after that create new tab in files tabs'''
         dialog = NewFile(self)
         dialog.exec_()
         if dialog.is_create_clicked():
@@ -143,10 +145,13 @@ class Editor(QMainWindow):
         self.files_tabs.open_new_tab(name, text, path)
 
     def show_about(self):
+        '''Open about window'''
         from src import about
         about.show(self)
 
     def closeEvent(self, event):
+        '''Call this function after close event.
+        The query will appear before exiting the program'''
         from src.close_file_msg import ask_before_exit
         is_something_modified = self.files_tabs.is_modified()
         reply = ask_before_exit(self, is_something_modified)

@@ -23,6 +23,7 @@ def _question(parent, *, title="Message", message=""):
 
 
 def _change_answer_to_bool(answer):
+    '''If the answer is "No" then return False, else True'''
     # QMessageBox.No - <answer>
     #
     # QMessageBox.No - QMessageBox.No = 0 return False

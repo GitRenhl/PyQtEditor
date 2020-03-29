@@ -67,11 +67,14 @@ class FilesBar(QTabWidget):
         return self.count() != 0
 
     def is_current_path(self) -> bool:
+        '''Will return True if current file have a path'''
         return self.currentWidget().get_path() is not None
 
     def is_modified(self, *, index: int = None) -> bool:
-        valid = False
+        '''This function will return True if widgets[index] is modified.
 
+        If you use this function without index parametr it will return True
+        if any of widgets are modified.'''
         def is_modified(index):
             return self.widget(index).isModified()
 
@@ -88,17 +91,23 @@ class FilesBar(QTabWidget):
         return valid
 
     def update_name(self, name: str):
+        '''Update current widget file name'''
         if not self.is_open_something():
             return False
         self.currentWidget().change_name(name)
         self.setTabText(self.currentIndex(), name)
 
     def update_path(self, path: str):
+        '''Update current widget file path'''
         if not self.is_open_something():
             return False
         self.currentWidget().change_path(path)
 
     def replace_in_text(self, old: str, new: str):
+        ''' Replace "old" with "new" in current file.
+
+        This function should not be using, 
+        because it will not save in copy/paste history '''
         currentWidget = self.currentWidget()
         new_text = currentWidget.text().replace(old, new)
         currentWidget.setText(new_text)
