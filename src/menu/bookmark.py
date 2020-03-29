@@ -26,7 +26,7 @@ class Bookmark:
             'replace_in_file': QAction("&Replace in file", master),
         }
         self.VIEW = {
-            'soon': QAction("&Soon", master),
+            'status_bar': QAction("Show s&tatus bar", master),
         }
         self.PREFERENCES = {
             'soon': QAction("&Soon", master),

@@ -20,6 +20,7 @@ class MenuBar(QMenuBar):
     paste = pyqtSignal()
     replace_in_file = pyqtSignal()
     # VIEW tab
+    hideshow_status_bar = pyqtSignal(bool)
 
     # SETTINGS tab
 
@@ -110,6 +111,12 @@ class MenuBar(QMenuBar):
             self.menu_edit.addAction(self.bookmarks.EDIT[key])
 
     def __set_view_menu(self):
+        self.bookmarks.VIEW['status_bar'].setCheckable(True)
+        self.bookmarks.VIEW['status_bar'].changed.connect(
+            lambda: self.hideshow_status_bar.emit(
+                self.bookmarks.VIEW['status_bar'].isChecked()
+            )
+        )
         for key in self.bookmarks.VIEW:
             self.menu_view.addAction(self.bookmarks.VIEW[key])
 

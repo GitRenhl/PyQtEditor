@@ -5,8 +5,9 @@ from PyQt5.QtGui import QIcon
 
 
 class FilesBar(QTabWidget):
-    new_tab = pyqtSignal()
-    nothing_open = pyqtSignal()
+    s_new_tab = pyqtSignal()
+    s_nothing_open = pyqtSignal()
+    s_cursor_position_changed = pyqtSignal(int, int)
 
     _ICON_DOT = QIcon("assets/dot-dark.png")
 
@@ -16,6 +17,14 @@ class FilesBar(QTabWidget):
         self.setTabsClosable(True)
         self.tabCloseRequested.connect(self.close_tab)
         self.tabs = []
+
+    def __cursor_position_changed(self, line, index):
+        self.s_cursor_position_changed.emit(line, index)
+
+    def __selection_changed(self, *a, **k):
+        # TODO implemet this
+        # show "[int] selected" on status bar
+        pass
 
     def show_modified_dot(self):
         # TODO implement this
@@ -27,9 +36,11 @@ class FilesBar(QTabWidget):
 
     def open_new_tab(self, name: str = "Untilted", data: str = "", path=None):
         if not self.is_open_something():
-            self.new_tab.emit()
-        text_widget = TextArea(name, data, path)
-        self.addTab(text_widget, name)
+            self.s_new_tab.emit()
+        ta_widget = TextArea(name, data, path)
+        ta_widget.cursorPositionChanged.connect(self.__cursor_position_changed)
+        ta_widget.selectionChanged.connect(self.__selection_changed)
+        self.addTab(ta_widget, name)
         self.setCurrentIndex(self.count() - 1)
         self.currentWidget().textChanged.connect(self.show_modified_dot)
 
@@ -46,7 +57,7 @@ class FilesBar(QTabWidget):
 
         self.removeTab(index)
         if self.count() == 0:
-            self.nothing_open.emit()
+            self.s_nothing_open.emit()
 
     # TODO to every get add index param and if param is None then use current widget
     def get_current_name(self):
@@ -106,14 +117,14 @@ class FilesBar(QTabWidget):
             return False
         self.currentWidget().change_path(path)
 
-    def replace_in_text(self, old: str, new: str):
-        ''' Replace "old" with "new" in current file.
+    # def replace_in_text(self, old: str, new: str):
+    #     ''' Replace "old" with "new" in current file.
 
-        This function should not be using, 
-        because it will not save in copy/paste history '''
-        currentWidget = self.currentWidget()
-        new_text = currentWidget.text().replace(old, new)
-        currentWidget.setText(new_text)
+    #     This function should not be using,
+    #     because it will not save in copy/paste history '''
+    #     currentWidget = self.currentWidget()
+    #     new_text = currentWidget.text().replace(old, new)
+    #     currentWidget.setText(new_text)
 
     def undo(self):
         if self.is_open_something():
