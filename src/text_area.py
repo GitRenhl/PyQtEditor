@@ -112,7 +112,7 @@ class TextArea(QsciScintilla):
             self.setModified(False)
         self.extension = self.__get_extension(name)
         self.current_lang = None
-        self.__font = QFont("Consolas, 'Courier New', monospace", 18)
+        self.__font = QFont(S.FONT_FAMILY, S.FONT_SIZE)
         self.__setup_editor()
 
     def get_name(self) -> str:
@@ -165,6 +165,10 @@ class TextArea(QsciScintilla):
         self.setMarginType(0, self.NumberMargin)
         self.set_margin_num_width()
         self.setMarginsBackgroundColor(S.MARGINS_BG_COLOR)
+        if lang is not None:
+            self.setEdgeMode(S.EDGE_MODE)
+            self.setEdgeColor(S.EDGE_COLOR)
+            self.setEdgeColumn(S.EDGE_COLUMN)
 
     def set_lexer(self, lang: str):
         new_lexer = self.get_lexer(lang)
