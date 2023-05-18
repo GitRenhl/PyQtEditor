@@ -27,12 +27,12 @@ class FilesBar(QTabWidget):
         pass
 
     def show_modified_dot(self):
-        # TODO implement this
-        # if self.currentWidget().isModified():
-        #     self.setTabIcon(self.currentIndex(), self._ICON_DOT)
-        # else:
-        #     self.setTabIcon(self.currentIndex(), None)
-        pass
+        new_text = self.currentWidget().get_name()
+        if self.currentWidget().isModified():
+            # self.setTabIcon(self.currentIndex(), self._ICON_DOT) # it does not working
+            new_text += ' *'
+
+        self.setTabText(self.currentIndex(), new_text)
 
     def open_new_tab(self, name: str = "Untilted", data: str = "", path=None):
         if not self.is_open_something():
@@ -42,7 +42,7 @@ class FilesBar(QTabWidget):
         ta_widget.selectionChanged.connect(self.__selection_changed)
         self.addTab(ta_widget, name)
         self.setCurrentIndex(self.count() - 1)
-        self.currentWidget().textChanged.connect(self.show_modified_dot)
+        self.currentWidget().modificationChanged.connect(self.show_modified_dot)
 
     def close_tab(self, index: int = None):
         from .close_file_msg import ask_before_exit
