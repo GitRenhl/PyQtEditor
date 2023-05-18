@@ -108,8 +108,9 @@ class Editor(QMainWindow):
         return True
 
     def save_file(self):
-        if not self.files_tabs.is_open_something():
+        if not self.files_tabs.is_open_something() or not self.files_tabs.currentWidget().isModified():
             return
+
         PATH = self.files_tabs.get_current_path()
         if PATH is None:
             return self.save_file_as()
@@ -131,10 +132,12 @@ class Editor(QMainWindow):
         else:
             self.status_bar.showMessage(f"File \"{FILE_NAME}\" "
                                         "saved successfully")
+            self.files_tabs.currentWidget().setModified(False)
 
     def save_file_as(self):
-        if not self.files_tabs.is_open_something():
+        if not self.files_tabs.is_open_something() or not self.files_tabs.currentWidget().isModified():
             return
+
         self.status_bar.showMessage(f"Saving file as...")
         file_name = QFileDialog.getSaveFileName(self,
                                                 "Save as...",
@@ -156,6 +159,7 @@ class Editor(QMainWindow):
             self.files_tabs.update_path(new_path)
             self.status_bar.showMessage(f"File \"{new_name}\" "
                                         "saved successfully")
+            self.files_tabs.currentWidget().setModified(False)
 
     @staticmethod
     def __open(path: str) -> str:
