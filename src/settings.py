@@ -9,7 +9,7 @@ class Settings:
     if sys.platform == 'linux':
         FONT_FAMILY = "DejaVu Sans Mono"
     else:
-        FONT_FAMILY = "Consolas, 'Courier New', monospace"
+        FONT_FAMILY = "Consolas" # "Courier New"
     FONT_SIZE = 14
 
     # Tab
